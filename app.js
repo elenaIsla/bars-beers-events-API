@@ -11,7 +11,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const auth = require('./routes/auth');
-
+const bbe = require('./routes/bbe');
 mongoose
   .connect(process.env.MONGODB_URI, {
     keepAlive: true,
@@ -26,6 +26,9 @@ mongoose
   });
 
 const app = express();
+
+// app title
+app.locals.title = "Bars&Events";
 
 app.use(
   cors({
@@ -63,6 +66,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/auth', auth);
+app.use('/bars&events', bbe);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

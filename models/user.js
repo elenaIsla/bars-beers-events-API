@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const { ObjectId } = Schema.Types;
 
 const userSchema = new Schema({
   username: { type: String, required: true, unique: true },
@@ -7,8 +8,9 @@ const userSchema = new Schema({
   city: {type: String},
   neighbourhood: {type: String},
   beerType: {type: String},  
-  favouriteBeers: [{type: ObjectId, ref: 'Beers'}], 
+  favouriteBeers: [{type: ObjectId, ref: 'Beer'}], 
   userimage: String,
+  favouriteBars: [{type: ObjectId, ref: 'Bar'}],
 }, {
   timestamps: {
     createdAt: 'created_at',
