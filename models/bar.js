@@ -16,8 +16,8 @@ const barSchema = new Schema({
         music: String, 
         disabled: String, 
     },
-    beersDraft: [{type: ObjectId, ref: 'Beer'}],
-    beersBottle: [{type: ObjectId, ref: 'Beer'}],
+    beersDraft: [{ beer: {type: ObjectId, ref: 'Beer'}, price: String}],
+    beersBottle: [{beer: {type: ObjectId, ref: 'Beer'}, price: String}],
     creator: {type: ObjectId, ref: 'User'},
     // location: { type: { type: String }, coordinates: [Number] },
     

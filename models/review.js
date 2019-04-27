@@ -7,10 +7,10 @@ const beerSchema = new Schema({
   title: {type: String, required: true, unique: true},
   comment: String, 
   creator:  [{type: ObjectId, ref: 'User'}],
-  bar: [{type: ObjectId, ref: 'Bar'}],
-  ratingBeer: {type: Number, required: true},
-  ratingToilet: {type: Number, required: true},
-  ratingMusic: {type: Number, required: true},
+  barID: [{type: ObjectId, ref: 'Bar'}],
+  ratingBeer: {type: Number, required: false},
+  ratingToilet: {type: Number, required: false},
+  ratingMusic: {type: Number, required: false},
   image: String, 
 }, {
     timestamps: {

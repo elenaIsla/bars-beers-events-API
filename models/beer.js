@@ -7,7 +7,6 @@ const beerSchema = new Schema({
   name: String, 
   description: String, 
   beerlogoImage: String,
-  price: String,
 }, {
   timestamps: {
     createdAt: 'created_at',
