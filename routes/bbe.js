@@ -21,16 +21,17 @@ const storage = cloudinaryStorage({
 
 const parser = multer({ storage });
 
-// const {
-//   isLoggedIn,
-//   isNotLoggedIn,
-//   validationLoggin,
-// } = require('../helpers/middlewares');
+const {
+  isLoggedIn,
+  isNotLoggedIn,
+  validationLoggin,
+} = require('../helpers/middlewares');
 
 
 /* POST  createBar page */ 
 
 router.post('/createBar', (req, res, next) => {
+    console.log('asdfasdfasf')
     const {barType, name, street, neighbourhood, city, categoryType, music, disabled, BeersDraft, BeersBottle} = req.body;
     const creator = req.session.currentUser._id;
     // let location = {
@@ -100,6 +101,32 @@ router.post('/:idBar/deleteBar', (req, res, next) => {
     })
 });
 
+/* GET  list Bar page */
+
+router.get('/bars', (req, res, next) => {
+  Bar.find()
+  .then((bars) => {
+    return res.status(200).json(bars);
+  })
+  .catch((error) => {
+    next(error);
+  });
+});
+
+/* GET Bar Datail page */
+
+router.get('/bars/:id', (req, res, next) => {
+  let barId = req.params.id;
+  Bar.findById({_id: barId})
+  .then((bar) => {
+    console.log(bar)
+    return res.status(200).json(bar);
+  })
+  .catch((error) => {
+    next(error);
+  });
+});
+
 /* GET-POST page create beer Form */
 
 router.post('/createBeer', (req, res, next) => {
@@ -146,6 +173,17 @@ router.post('/:idBeer/deleteBeer', (req, res, next) => {
     })
 });
 
+/* GET  list Beer page */
+
+router.get('/beers', (req, res, next) => {
+  Beer.find()
+  .then((beers) => {
+    return res.status(200).json(beers);
+  })
+  .catch((error) => {
+    next(error);
+  });
+});
 
 /* GET-POST page create REVIEW Form */
 
@@ -178,7 +216,7 @@ router.post('/newReview', (req, res, next) => {
   })
 });
 
-/* POST  deleteBeer page */
+/* POST  deleteReview page */
 
 router.post('/:idReview/deleteReview', (req, res, next) => {
   const {idReview} = req.params;
@@ -189,6 +227,17 @@ router.post('/:idReview/deleteReview', (req, res, next) => {
     .catch((error) => {
       next(error);
     })
+});
+
+/* GET users listing. */
+router.get('/users', (req, res, next) => {
+  User.find()
+  .then((users) => {
+    return res.status(200).json(users);
+  })
+  .catch((error) => {
+    next(error);
+  });
 });
 
 
