@@ -27,7 +27,7 @@ const {
   validationLoggin,
 } = require('../helpers/middlewares');
 
-
+/* API  Bar */
 /* POST  createBar page */ 
 
 router.post('/createBar', (req, res, next) => {
@@ -75,9 +75,21 @@ router.post('/createBar', (req, res, next) => {
       });
     });
 
-/* POST  updateBar page */
+/* POST-GET  updateBar page */
 
-router.post('/:idBar/updateBar', (req, res, next) => {
+router.get('/:idBar/updateBar', (req, res, next) => {
+  const {idBar} = req.params;
+  Bar.findById(idBar)
+    .then((bar) => {
+      return res.status(200).json(bar);
+    }) 
+    .catch((error) => {
+      next(error);
+    })
+});
+
+
+router.post('/bar/:idBar', (req, res, next) => {
   const {barType, name, street, neighbourhood, city, categoryType, music, disabled, BeersDraft, BeersBottle} = req.body;
   const {idBar} = req.params;
   Bar.findByIdAndUpdate(idBar, {barType, name, street, neighbourhood, city, categoryType, music, disabled, BeersDraft, BeersBottle})
@@ -88,6 +100,9 @@ router.post('/:idBar/updateBar', (req, res, next) => {
       next(error);
     })
 });
+
+
+
 /* POST  deleteBar page */
 
 router.post('/:idBar/deleteBar', (req, res, next) => {
@@ -127,6 +142,8 @@ router.get('/bars/:id', (req, res, next) => {
   });
 });
 
+
+/* API  Beer */
 /* GET-POST page create beer Form */
 
 router.post('/createBeer', (req, res, next) => {
