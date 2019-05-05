@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
 
 const beerSchema = new Schema({
-  name: String, 
+  name: {type: String, required: true, unique: true}, 
   description: String, 
   beerlogoImage: String,
 }, {

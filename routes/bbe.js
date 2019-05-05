@@ -32,7 +32,7 @@ const {
 
 router.post('/createBar', (req, res, next) => {
     console.log('asdfasdfasf')
-    const {barType, name, street, neighbourhood, city, categoryType, music, disabled, BeersDraft, BeersBottle} = req.body;
+    const {barType, name, street, neighbourhood, city, categoryType, music, disabled, draftBeer, bottleBeer, price} = req.body;
     const creator = req.session.currentUser._id;
     // let location = {
     //   type: 'Point',
@@ -56,8 +56,9 @@ router.post('/createBar', (req, res, next) => {
               music, 
               disabled,
             },
-            BeersDraft,
-            BeersBottle,
+            draftBeer, 
+            bottleBeer,
+            price,
             creator,
             // location,
           })
@@ -89,10 +90,28 @@ router.get('/:idBar/updateBar', (req, res, next) => {
 });
 
 
-router.post('/bar/:idBar', (req, res, next) => {
-  const {barType, name, street, neighbourhood, city, categoryType, music, disabled, BeersDraft, BeersBottle} = req.body;
-  const {idBar} = req.params;
-  Bar.findByIdAndUpdate(idBar, {barType, name, street, neighbourhood, city, categoryType, music, disabled, BeersDraft, BeersBottle})
+router.put('/:id', (req, res, next) => {
+  const {barType, name, street, neighbourhood, city, categoryType, music, disabled, draftBeer, bottleBeer, price} = req.body;
+  const {id} = req.params;
+  Bar.findByIdAndUpdate(
+    id, 
+    {barType,
+            name,
+            address:{  
+            street,
+            neighbourhood,
+            city,
+            },
+            category:{
+              categoryType, 
+              music, 
+              disabled,
+            },
+            draftBeer, 
+            bottleBeer, 
+            price
+          },
+    )
     .then((bar) => {
       return res.status(200).json(bar);
     }) 
