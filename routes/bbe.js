@@ -152,6 +152,8 @@ router.get('/bars', (req, res, next) => {
 router.get('/bars/:id', (req, res, next) => {
   let barId = req.params.id;
   Bar.findById({_id: barId})
+  .populate('draftBeer')
+  .populate('bottleBeer')
   .then((bar) => {
     console.log(bar)
     return res.status(200).json(bar);
@@ -221,17 +223,34 @@ router.get('/beers', (req, res, next) => {
   });
 });
 
+
+/* ------------------------------------API  Review --------------------------------------------*/
+
+/* GET  list Reviews page */
+
+router.get('/reviews', (req, res, next) => {
+  Review.find()
+  // .populate('barID')
+  .populate('creator')
+  .then((reviews) => {
+    return res.status(200).json(reviews);
+  })
+  .catch((error) => {
+    next(error);
+  });
+});
+
 /* GET-POST page create REVIEW Form */
 
-router.post('/newReview', (req, res, next) => {
+router.post('/newReview/:id', (req, res, next) => {
   
   const {title,
           comment, 
-          barID,
           ratingBeer,
           ratingToilet,
           ratingMusic,
           image} = req.body;
+  const barID = req.params.id
   const creator = req.session.currentUser._id;
 
   Review.create({
