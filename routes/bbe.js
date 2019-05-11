@@ -27,7 +27,7 @@ const {
   validationLoggin,
 } = require('../helpers/middlewares');
 
-/* API  Bar */
+/* ------------------------------------API  Bar --------------------------------------------*/
 /* POST  createBar page */ 
 
 router.post('/createBar', (req, res, next) => {
@@ -149,9 +149,9 @@ router.get('/bars', (req, res, next) => {
 
 /* GET Bar Datail page */
 
-router.get('/bars/:id', (req, res, next) => {
-  let barId = req.params.id;
-  Bar.findById({_id: barId})
+router.get('/bars/:idBar', (req, res, next) => {
+  let {idBar} = req.params;
+  Bar.findById({_id: idBar})
   .populate('draftBeer')
   .populate('bottleBeer')
   .then((bar) => {
@@ -164,7 +164,7 @@ router.get('/bars/:id', (req, res, next) => {
 });
 
 
-/* API  Beer */
+/* ------------------------------------API  Beer --------------------------------------------*/
 /* GET-POST page create beer Form */
 
 router.post('/createBeer', (req, res, next) => {
@@ -230,7 +230,7 @@ router.get('/beers', (req, res, next) => {
 
 router.get('/reviews', (req, res, next) => {
   Review.find()
-  // .populate('barID')
+  .populate('barID')
   .populate('creator')
   .then((reviews) => {
     return res.status(200).json(reviews);
