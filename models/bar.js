@@ -20,6 +20,7 @@ const barSchema = new Schema({
     bottleBeer: [{type: ObjectId, ref: 'Beer'}],
     price: String,
     creator: {type: ObjectId, ref: 'User'},
+    averageRating: Number,
     // location: { type: { type: String }, coordinates: [Number] },
     
 }, {

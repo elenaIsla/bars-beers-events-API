@@ -28,12 +28,14 @@ const {
 } = require('../helpers/middlewares');
 
 /* ------------------------------------API  Bar --------------------------------------------*/
+
 /* POST  createBar page */ 
 
 router.post('/createBar', (req, res, next) => {
     console.log('asdfasdfasf')
     const {barType, name, street, neighbourhood, city, categoryType, music, disabled, draftBeer, bottleBeer, price} = req.body;
     const creator = req.session.currentUser._id;
+    let averageRating = 0;
     // let location = {
     //   type: 'Point',
     //   coordinates: [req.body.longitude, req.body.latitude]
@@ -60,6 +62,7 @@ router.post('/createBar', (req, res, next) => {
             bottleBeer,
             price,
             creator,
+            averageRating,
             // location,
           })
           .then((bar) => {
@@ -129,6 +132,9 @@ router.post('/:idBar/deleteBar', (req, res, next) => {
   Bar.findByIdAndDelete(idBar)
     .then((bar) => {
       return res.status(200).json(bar);
+      // Review.findByIdAndDelete({barID: idBar})
+      //   .then((data) =>{
+      //   })
     }) 
     .catch((error) => {
       next(error);
@@ -165,6 +171,7 @@ router.get('/bars/:idBar', (req, res, next) => {
 
 
 /* ------------------------------------API  Beer --------------------------------------------*/
+
 /* GET-POST page create beer Form */
 
 router.post('/createBeer', (req, res, next) => {
@@ -252,6 +259,10 @@ router.post('/newReview/:id', (req, res, next) => {
           image} = req.body;
   const barID = req.params.id
   const creator = req.session.currentUser._id;
+  let numReview;
+  let averageRatingReview = (ratingBeer + ratingMusic + ratingToilet)/3;
+  let ratingBar;
+  let averageRating;
 
   Review.create({
     title,
@@ -264,7 +275,20 @@ router.post('/newReview/:id', (req, res, next) => {
     creator,
   })
   .then((review) => {
-    return res.status(200).json(review);
+    Review.find({barID: barID})
+      .then((data) => {
+          console.log(data);
+          numReview = data.length;
+          Bar.findById(barID)
+            .then((bar) => {
+              ratingBar = bar.averageRating;
+              averageRating = (averageRatingReview + ratingBar)/(numReview)
+              Bar.findByIdAndUpdate(barID, {averageRating})
+                .then((data) =>{
+                  return res.status(200).json(review);
+                })
+            })
+      }) 
   })
   .catch(error => {
     console.log(error);
