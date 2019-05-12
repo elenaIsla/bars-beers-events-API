@@ -158,15 +158,15 @@ router.get('/bars', (req, res, next) => {
 router.get('/bars/:idBar', (req, res, next) => {
   let {idBar} = req.params;
   Bar.findById({_id: idBar})
-  .populate('draftBeer')
-  .populate('bottleBeer')
-  .then((bar) => {
-    console.log(bar)
-    return res.status(200).json(bar);
-  })
-  .catch((error) => {
-    next(error);
-  });
+    .populate('draftBeer')
+    .populate('bottleBeer')
+    .then((bar) => {
+      console.log(bar)
+      return res.status(200).json(bar);
+    })
+    .catch((error) => {
+      next(error);
+    });
 });
 
 
@@ -308,6 +308,24 @@ router.post('/:idReview/deleteReview', (req, res, next) => {
     })
 });
 
+/* ------------------------------------API  User--------------------------------------------*/
+
+/* GET User Datail page */
+
+router.get('/users/:id', (req, res, next) => {
+  let {id} = req.params;
+  User.findById({_id: id})
+    .populate('favouriteBeers')
+    .populate('favouriteBars')
+    .then((user) => {
+      console.log(user)
+      return res.status(200).json(user);
+    })
+    .catch((error) => {
+      next(error);
+    });
+});
+
 /* GET users listing. */
 router.get('/users', (req, res, next) => {
   User.find()
@@ -317,6 +335,21 @@ router.get('/users', (req, res, next) => {
   .catch((error) => {
     next(error);
   });
+});
+
+
+
+/* POST  deleteUser page */
+
+router.post('/:idUser/deleteUser', (req, res, next) => {
+  const {idUser} = req.params;
+  User.findByIdAndDelete(idUser)
+    .then((user) => {
+      return res.status(200).json(user);
+    }) 
+    .catch((error) => {
+      next(error);
+    })
 });
 
 
