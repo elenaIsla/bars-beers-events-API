@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
 
 const beerSchema = new Schema({
-  title: {type: String, required: true, unique: true},
+  title: {type: String, required: true},
   comment: String, 
   creator:  [{type: ObjectId, ref: 'User'}],
   barID: [{type: ObjectId, ref: 'Bar'}],
