@@ -145,6 +145,8 @@ router.post('/:idBar/deleteBar', (req, res, next) => {
 
 router.get('/bars', (req, res, next) => {
   Bar.find()
+  .populate('draftBeer')
+  .populate('bottleBeer')
   .then((bars) => {
     return res.status(200).json(bars);
   })
