@@ -36,6 +36,9 @@ router.post('/createBar', (req, res, next) => {
     const {barType, name, street, neighbourhood, city, categoryType, music, disabled, draftBeer, bottleBeer, price} = req.body;
     const creator = req.session.currentUser._id;
     let averageRating = 0;
+    let ratingBeer = 0;
+    let ratingToilet = 0;
+    let ratingMusic = 0;
     // let location = {
     //   type: 'Point',
     //   coordinates: [req.body.longitude, req.body.latitude]
@@ -63,6 +66,9 @@ router.post('/createBar', (req, res, next) => {
             price,
             creator,
             averageRating,
+            ratingBeer,
+            ratingToilet,
+            ratingMusic,
             // location,
           })
           .then((bar) => {
@@ -84,6 +90,8 @@ router.post('/createBar', (req, res, next) => {
 router.get('/:idBar/updateBar', (req, res, next) => {
   const {idBar} = req.params;
   Bar.findById(idBar)
+    .populate('draftBeer')
+    .populate('bottleBeer')
     .then((bar) => {
       return res.status(200).json(bar);
     }) 
@@ -130,11 +138,11 @@ router.put('/:id', (req, res, next) => {
 router.post('/:idBar/deleteBar', (req, res, next) => {
   const {idBar} = req.params;
   Bar.findByIdAndDelete(idBar)
-    .then((bar) => {
-      return res.status(200).json(bar);
-      // Review.findByIdAndDelete({barID: idBar})
-      //   .then((data) =>{
-      //   })
+    .then((bar) => {   
+      Review.deleteMany({barID: idBar})
+        .then((data) =>{
+          return res.status(200).json(bar);  
+        })
     }) 
     .catch((error) => {
       next(error);
@@ -207,7 +215,7 @@ router.post('/:idBeer/updateBeer', (req, res, next) => {
 });
 
 
-/* POST  deleteBeer page */
+/* POST  deleteBeer  */
 
 router.post('/:idBeer/deleteBeer', (req, res, next) => {
   const {idBeer} = req.params;
@@ -249,6 +257,21 @@ router.get('/reviews', (req, res, next) => {
   });
 });
 
+/* GET  list Review From one Bar */
+
+router.get('/reviews/:idBar', (req, res, next) => {
+  const {idBar} = req.params;
+  Review.find({barID: idBar})
+    .populate('creator')
+    .then((reviews) => {
+      console.log(reviews)
+      return res.status(200).json(reviews);
+    })
+    .catch((error) => {
+      next(error);
+    });
+});
+
 /* GET-POST page create REVIEW Form */
 
 router.post('/newReview/:id', (req, res, next) => {
@@ -265,6 +288,9 @@ router.post('/newReview/:id', (req, res, next) => {
   let averageRatingReview = (ratingBeer + ratingMusic + ratingToilet)/3;
   let ratingBar;
   let averageRating;
+  let beerRat;
+  let toiletRat;
+  let musicRat
 
   Review.create({
     title,
@@ -283,12 +309,20 @@ router.post('/newReview/:id', (req, res, next) => {
           numReview = data.length;
           Bar.findById(barID)
             .then((bar) => {
-              ratingBar = bar.averageRating;
-              averageRating = (averageRatingReview + ratingBar)/(numReview)
-              Bar.findByIdAndUpdate(barID, {averageRating})
-                .then((data) =>{
-                  return res.status(200).json(review);
-                })
+              // ratingBar = bar.averageRating;
+              beerRat = (bar.ratingBeer + ratingBeer)/numReview;
+              toiletRat = (bar.ratingToilet + ratingToilet)/numReview,
+              musicRat = (bar.ratingMusic + ratingMusic)/numReview,
+              averageRating = (averageRatingReview + bar.averageRating)/(numReview)
+              Bar.findByIdAndUpdate(
+                barID, 
+                {averageRating, 
+                ratingBeer: beerRat, 
+                ratingToilet: toiletRat, 
+                ratingMusic: musicRat})
+                  .then((data) =>{
+                    return res.status(200).json(review);
+                  })
             })
       }) 
   })
@@ -351,6 +385,26 @@ router.post('/:idUser/deleteUser', (req, res, next) => {
     }) 
     .catch((error) => {
       next(error);
+    })
+});
+
+
+/* PUT addFavorite Bar to User */
+
+router.put('/:UserID/addFavoriteBar', (req, res, next) => {
+  const {UserID} = req.params;
+  const {BarID} = req.body;
+  
+  User.findById(UserID)
+    .then((user) => {
+      let newBars = [...user.favouriteBars, BarID]
+      User.findByIdAndUpdate(UserID, {favouriteBars: newBars})
+        .then((user) => {
+          return res.status(200).json(user);
+        })
+    })
+    .catch(error => {
+      console.log(error);
     })
 });
 
