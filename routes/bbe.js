@@ -386,17 +386,52 @@ router.post('/:idUser/deleteUser', (req, res, next) => {
     })
 });
 
+/* PUT Update User */
+
+router.put('/:idUser/updateUser', (req, res, next) => {
+  const {idUser} = req.params;
+  const {username, city, neighbourhood, beerType, favouriteBeers} = req.body;
+  User.findByIdAndUpdate(idUser, {username, city, neighbourhood, beerType, favouriteBeers})
+    .then((user) => {
+      return res.status(200).json(user);
+    })
+    .catch(error => {
+      console.log(error);
+    })
+  });
 
 /* PUT addFavorite Bar to User */
 
-router.put('/:UserID/addFavoriteBar', (req, res, next) => {
+router.post('/addFavoriteBar/:UserID', (req, res, next) => {
   const {UserID} = req.params;
-  const {BarID} = req.body;
-  
+  const {BarID} = req.body;  
   User.findById(UserID)
     .then((user) => {
-      let newBars = [...user.favouriteBars, BarID]
-      User.findByIdAndUpdate(UserID, {favouriteBars: newBars})
+      user.favouriteBars.push(BarID)
+      // const newBars = [...user.favouriteBars, BarID]
+      return user.save()
+        
+      // User.findByIdAndUpdate(UserID, {favouriteBars: newBars})
+      //   .then((user) => {
+      //     return res.status(200).json(user);
+      //   })
+    })
+    .then((saveduser)=>{
+      return 
+    })
+    .catch(error => {
+      console.log(error);
+    })
+});
+
+router.put('/:idUser/deleteFavourite', (req, res, next) => {
+  const {idUser} = req.params;
+  const {idBar} = req.body;
+  User.findById(idUser)
+    .then((user) => {
+      const indexBar = user.favouriteBars.indexOf(idBar);
+      const newFavourite = user.favouriteBars.splice(indexBar, 1); 
+      User.findByIdAndUpdate(idUser, {favouriteBars: newFavourite})
         .then((user) => {
           return res.status(200).json(user);
         })
@@ -405,6 +440,8 @@ router.put('/:UserID/addFavoriteBar', (req, res, next) => {
       console.log(error);
     })
 });
+
+
 
 
 module.exports = router;

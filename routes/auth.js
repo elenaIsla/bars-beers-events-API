@@ -48,7 +48,8 @@ router.post(
             city,
             neighbourhood,
             beerType,  
-            favouriteBeers, 
+            favouriteBeers,
+            userimage, 
          } = req.body;
 
     try {
@@ -64,6 +65,7 @@ router.post(
                                             neighbourhood,
                                             beerType,  
                                             favouriteBeers, 
+                                            userimage,
                                           });
         req.session.currentUser = newUser;
         res.status(200).json(newUser);
