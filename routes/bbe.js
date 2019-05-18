@@ -184,10 +184,11 @@ router.get('/bars/:idBar', (req, res, next) => {
 
 router.post('/createBeer', (req, res, next) => {
   
-  const {name, description} = req.body;
+  const {name, description, beerlogoImage} = req.body;
   Beer.create({
     name,
     description,
+    beerlogoImage
   })
   .then((beer) => {
     return res.status(200).json(beer);
@@ -408,23 +409,17 @@ router.post('/addFavoriteBar/:UserID', (req, res, next) => {
   User.findById(UserID)
     .then((user) => {
       user.favouriteBars.push(BarID)
-      // const newBars = [...user.favouriteBars, BarID]
       return user.save()
-        
-      // User.findByIdAndUpdate(UserID, {favouriteBars: newBars})
-      //   .then((user) => {
-      //     return res.status(200).json(user);
-      //   })
     })
     .then((saveduser)=>{
-      return 
+      return res.status(200).json(saveduser);
     })
     .catch(error => {
       console.log(error);
     })
 });
 
-router.put('/:idUser/deleteFavourite', (req, res, next) => {
+router.post('/:idUser/deleteFavourite', (req, res, next) => {
   const {idUser} = req.params;
   const {idBar} = req.body;
   User.findById(idUser)

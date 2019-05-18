@@ -55,7 +55,7 @@ router.post(
     try {
       const user = await User.findOne({ username }, 'username');
       if (user) {
-        return next(createError(422));
+        return next(createError(422, "This user already exist"));
       } else {
         const salt = bcrypt.genSaltSync(10);
         const hashPass = bcrypt.hashSync(password, salt);
