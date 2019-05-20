@@ -46,7 +46,7 @@ router.post('/createBar', (req, res, next) => {
     Bar.findOne({name})
       .then((nameBar) => {
         if(nameBar){
-          next(createError(404), 'This bar already exists');
+          next(createError(404, 'This bar already exists'));
         } else {
           Bar.create({
             barType,
@@ -309,10 +309,10 @@ router.post('/newReview/:id', (req, res, next) => {
           Bar.findById(barID)
             .then((bar) => {
               // ratingBar = bar.averageRating;
-              beerRat = (bar.ratingBeer + ratingBeer)/numReview;
-              toiletRat = (bar.ratingToilet + ratingToilet)/numReview,
-              musicRat = (bar.ratingMusic + ratingMusic)/numReview,
-              averageRating = (averageRatingReview + bar.averageRating)/(numReview)
+              beerRat = (bar.ratingBeer + ratingBeer)/numReview.toFixed(1);
+              toiletRat = (bar.ratingToilet + ratingToilet)/numReview.toFixed(1),
+              musicRat = (bar.ratingMusic + ratingMusic)/numReview.toFixed(1),
+              averageRating = (averageRatingReview + bar.averageRating)/(numReview).toFixed(1)
               Bar.findByIdAndUpdate(
                 barID, 
                 {averageRating, 
