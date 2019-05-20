@@ -153,6 +153,8 @@ router.post('/:idBar/deleteBar', (req, res, next) => {
 
 router.get('/bars', (req, res, next) => {
   Bar.find()
+  .populate('draftBeer')
+  .populate('bottleBeer')
   .then((bars) => {
     return res.status(200).json(bars);
   })
@@ -280,8 +282,8 @@ router.post('/newReview/:id', (req, res, next) => {
           ratingBeer,
           ratingToilet,
           ratingMusic,
-          image} = req.body;
-  const barID = req.params.id
+          toiletPicture} = req.body;
+  const barID = req.params.id;
   const creator = req.session.currentUser._id;
   let numReview;
   let averageRatingReview = (ratingBeer + ratingMusic + ratingToilet)/3;
@@ -289,7 +291,8 @@ router.post('/newReview/:id', (req, res, next) => {
   let averageRating;
   let beerRat;
   let toiletRat;
-  let musicRat
+  let musicRat;
+  let toiletArray;
 
   Review.create({
     title,
@@ -298,32 +301,35 @@ router.post('/newReview/:id', (req, res, next) => {
     ratingBeer,
     ratingToilet,
     ratingMusic,
-    image,
     creator,
   })
   .then((review) => {
     Review.find({barID: barID})
       .then((data) => {
-          console.log(data);
+          console.log(data)
           numReview = data.length;
           Bar.findById(barID)
             .then((bar) => {
-              // ratingBar = bar.averageRating;
+              bar.toiletPictures.push(toiletPicture);   
               beerRat = (bar.ratingBeer + ratingBeer)/numReview;
-              toiletRat = (bar.ratingToilet + ratingToilet)/numReview,
-              musicRat = (bar.ratingMusic + ratingMusic)/numReview,
-              averageRating = (averageRatingReview + bar.averageRating)/(numReview)
+              toiletRat = (bar.ratingToilet + ratingToilet)/numReview;
+              musicRat = (bar.ratingMusic + ratingMusic)/numReview;
+              ratingBar = (averageRatingReview + bar.averageRating)/(numReview);
               Bar.findByIdAndUpdate(
                 barID, 
-                {averageRating, 
+                {averageRating: ratingBar, 
                 ratingBeer: beerRat, 
                 ratingToilet: toiletRat, 
-                ratingMusic: musicRat})
-                  .then((data) =>{
-                    return res.status(200).json(review);
-                  })
+                ratingMusic: musicRat,
+                toiletPictures: toiletArray,        
+              })
+              return bar.save()
+              .then((data) =>{
+                return res.status(200).json(data);
+              })
+              
             })
-      }) 
+      })
   })
   .catch(error => {
     console.log(error);
@@ -358,7 +364,7 @@ router.get('/users/:id', (req, res, next) => {
     })
     .catch((error) => {
       next(error);
-    });
+    })
 });
 
 /* GET users listing. */
@@ -369,7 +375,7 @@ router.get('/users', (req, res, next) => {
   })
   .catch((error) => {
     next(error);
-  });
+  })
 });
 
 
