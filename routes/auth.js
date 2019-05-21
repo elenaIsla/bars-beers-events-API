@@ -84,7 +84,7 @@ router.post('/logout', isLoggedIn(), (req, res, next) => {
 router.get('/private', isLoggedIn(), (req, res, next) => {
   res.status(200).json({
     message: 'This is a private message',
-  });
+  }); 
 });
 
 module.exports = router;

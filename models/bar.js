@@ -24,6 +24,7 @@ const barSchema = new Schema({
     ratingBeer: Number,
     ratingToilet: Number,
     ratingMusic: Number,
+    toiletPictures: [String],
     // location: { type: { type: String }, coordinates: [Number] },
     
 }, {
