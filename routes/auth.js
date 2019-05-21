@@ -25,12 +25,12 @@ router.post(
     try {
       const user = await User.findOne({ username });
       if (!user) {
-        next(createError(404));
+        next(createError(404, 'This username does not exist'));
       } else if (bcrypt.compareSync(password, user.password)) {
         req.session.currentUser = user;
         return res.status(200).json(user);
       } else {
-        next(createError(401));
+        next(createError(401, 'This password is incorrect'));
       }
     } catch (error) {
       next(error);
@@ -48,13 +48,14 @@ router.post(
             city,
             neighbourhood,
             beerType,  
-            favouriteBeers, 
+            favouriteBeers,
+            userimage, 
          } = req.body;
 
     try {
       const user = await User.findOne({ username }, 'username');
       if (user) {
-        return next(createError(422));
+        return next(createError(422, "This user already exist"));
       } else {
         const salt = bcrypt.genSaltSync(10);
         const hashPass = bcrypt.hashSync(password, salt);
@@ -64,6 +65,7 @@ router.post(
                                             neighbourhood,
                                             beerType,  
                                             favouriteBeers, 
+                                            userimage,
                                           });
         req.session.currentUser = newUser;
         res.status(200).json(newUser);
