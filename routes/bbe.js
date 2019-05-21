@@ -311,10 +311,10 @@ router.post('/newReview/:id', (req, res, next) => {
           Bar.findById(barID)
             .then((bar) => {
               bar.toiletPictures.push(toiletPicture);   
-              beerRat = (bar.ratingBeer + ratingBeer)/numReview;
-              toiletRat = (bar.ratingToilet + ratingToilet)/numReview;
-              musicRat = (bar.ratingMusic + ratingMusic)/numReview;
-              ratingBar = (averageRatingReview + bar.averageRating)/(numReview);
+              beerRat = (bar.ratingBeer + ratingBeer)/numReview.tofixed(1);
+              toiletRat = (bar.ratingToilet + ratingToilet)/numReview.tofixed(1);
+              musicRat = (bar.ratingMusic + ratingMusic)/numReview.tofixed(1);
+              ratingBar = (averageRatingReview + bar.averageRating)/(numReview).tofixed(1);
               Bar.findByIdAndUpdate(
                 barID, 
                 {averageRating: ratingBar, 
