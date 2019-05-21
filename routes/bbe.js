@@ -430,9 +430,9 @@ router.post('/:idUser/deleteFavourite', (req, res, next) => {
   const {idBar} = req.body;
   User.findById(idUser)
     .then((user) => {
-      const indexBar = user.favouriteBars.indexOf(idBar);
-      const newFavourite = user.favouriteBars.splice(indexBar, 1); 
-      User.findByIdAndUpdate(idUser, {favouriteBars: newFavourite})
+      let indexBar = user.favouriteBars.indexOf(idBar);
+      let newFavorite = user.favouriteBars.splice(indexBar, 1); 
+      User.findByIdAndUpdate(idUser, {favouriteBars: newFavorite})
         .then((user) => {
           return res.status(200).json(user);
         })
