@@ -414,8 +414,10 @@ router.post('/addFavoriteBar/:UserID', (req, res, next) => {
   const {BarID} = req.body;  
   User.findById(UserID)
     .then((user) => {
-      user.favouriteBars.push(BarID)
-      return user.save()
+      if(user.favouriteBars.indexOf() != -1){
+        user.favouriteBars.push(BarID)
+        return user.save()
+      }  
     })
     .then((saveduser)=>{
       return res.status(200).json(saveduser);
@@ -430,12 +432,16 @@ router.post('/:idUser/deleteFavourite', (req, res, next) => {
   const {idBar} = req.body;
   User.findById(idUser)
     .then((user) => {
-      let indexBar = user.favouriteBars.indexOf(idBar);
-      let newFavorite = user.favouriteBars.splice(indexBar, 1); 
-      User.findByIdAndUpdate(idUser, {favouriteBars: newFavorite})
-        .then((user) => {
-          return res.status(200).json(user);
-        })
+       user.favoriteBars.filter( ( e ) => {
+        return e !== idBar;
+          } );
+      return user.save()
+      // let indexBar = user.favouriteBars.indexOf(idBar);
+      // let newFavorite = user.favouriteBars.splice(indexBar, 1); 
+      // User.findByIdAndUpdate(idUser, {favouriteBars: newFavorite})
+      //   .then((user) => {
+      //     return res.status(200).json(user);
+      //   })
     })
     .catch(error => {
       console.log(error);
