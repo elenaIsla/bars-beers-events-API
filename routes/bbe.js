@@ -310,11 +310,11 @@ router.post('/newReview/:id', (req, res, next) => {
           numReview = data.length;
           Bar.findById(barID)
             .then((bar) => {
-              bar.toiletPictures.push(toiletPicture);   
-              beerRat = (bar.ratingBeer + ratingBeer)/numReview.tofixed(1);
-              toiletRat = (bar.ratingToilet + ratingToilet)/numReview.tofixed(1);
-              musicRat = (bar.ratingMusic + ratingMusic)/numReview.tofixed(1);
-              ratingBar = (averageRatingReview + bar.averageRating)/(numReview).tofixed(1);
+              toiletArray =bar.toiletPictures.push(toiletPicture);   
+              beerRat = ((bar.ratingBeer + ratingBeer)/numReview).toFixed(1);
+              toiletRat = ((bar.ratingToilet + ratingToilet)/numReview).toFixed(1);
+              musicRat = ((bar.ratingMusic + ratingMusic)/numReview).toFixed(1);
+              ratingBar = ((averageRatingReview + bar.averageRating)/(numReview)).toFixed(1);
               Bar.findByIdAndUpdate(
                 barID, 
                 {averageRating: ratingBar, 
@@ -323,7 +323,6 @@ router.post('/newReview/:id', (req, res, next) => {
                 ratingMusic: musicRat,
                 toiletPictures: toiletArray,        
               })
-              return bar.save()
               .then((data) =>{
                 return res.status(200).json(data);
               })
@@ -359,7 +358,6 @@ router.get('/users/:id', (req, res, next) => {
     .populate('favouriteBeers')
     .populate('favouriteBars')
     .then((user) => {
-      console.log(user)
       return res.status(200).json(user);
     })
     .catch((error) => {
@@ -442,6 +440,9 @@ router.post('/:idUser/deleteFavourite', (req, res, next) => {
       //   .then((user) => {
       //     return res.status(200).json(user);
       //   })
+      .then((saveduser) => {
+        return res.status(200).json(saveduser);
+      })
     })
     .catch(error => {
       console.log(error);
